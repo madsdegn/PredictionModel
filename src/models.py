@@ -19,34 +19,52 @@ from src.feature_engineering import build_preprocessor
 
 def log_reg():
     pre = build_preprocessor()
-    clf = LogisticRegression(max_iter=1000, class_weight="balanced", solver="lbfgs")
+    clf = LogisticRegression(
+        max_iter=1000,
+        class_weight="balanced",
+        solver="lbfgs"
+        )
     return Pipeline([("pre", pre), ("model", clf)])
 
 def knn():
     pre = build_preprocessor()
-    clf = KNeighborsClassifier(n_neighbors=15, weights="distance")
+    clf = KNeighborsClassifier(
+        n_neighbors=5,
+        weights="uniform"
+        )
     return Pipeline([("pre", pre), ("model", clf)])
 
 def dt():
     pre = build_preprocessor()
-    clf = DecisionTreeClassifier(max_depth=6, class_weight="balanced", random_state=42)
+    clf = DecisionTreeClassifier(
+        max_depth=6,
+        class_weight="balanced",
+        random_state=42
+        )
     return Pipeline([("pre", pre), ("model", clf)])
 
 def rf():
     pre = build_preprocessor()
     clf = RandomForestClassifier(
-        n_estimators=300, min_samples_leaf=2,
-        class_weight="balanced_subsample", random_state=42, n_jobs=-1
+        n_estimators=200,
+        max_depth=5,
+        min_samples_leaf=10,
+        max_features="sqrt",
+        class_weight="balanced",
+        random_state=42,
+        n_jobs=-1
     )
     return Pipeline([("pre", pre), ("model", clf)])
 
 def xgb():
     pre = build_preprocessor()
     clf = XGBClassifier(
-        n_estimators=500, max_depth=4, learning_rate=0.05,
-        subsample=0.8, colsample_bytree=0.8, reg_lambda=1.0,
-        objective="binary:logistic", eval_metric="logloss",
-        random_state=42, n_jobs=-1
+        objective="binary:logistic",
+        eval_metric="logloss",
+        random_state=42,
+        n_estimators=300,
+        learning_rate=0.05,
+        max_depth=3
     )
     return Pipeline([("pre", pre), ("model", clf)])
 

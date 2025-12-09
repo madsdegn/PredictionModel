@@ -23,6 +23,7 @@ from src.config import (
     SEED, DEFAULT_MODEL, ARTIFACTS_DIR
 )
 from src.models import MODEL_REGISTRY
+from src.evaluation import plot_evaluation   # <-- import plotting helper
 
 
 def train_model(model_name: str = DEFAULT_MODEL):
@@ -88,6 +89,9 @@ def train_model(model_name: str = DEFAULT_MODEL):
     model_path = ARTIFACTS_DIR / f"{model_name}_model.pkl"
     joblib.dump(pipeline, model_path)
     print(f"\nModel saved to {model_path}")
+
+    # Generate evaluation plots for the test set
+    plot_evaluation(pipeline, X_test, y_test, model_name)
 
     return metrics
 
