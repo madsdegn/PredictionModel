@@ -46,10 +46,6 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         # Activity Ratio
         X["Activity_Ratio"] = X["Exercise Hours Per Week"] / X["Sedentary Hours Per Day"]
 
-        # Optional features
-        X["Metabolic_Core"] = X["Diabetes"] + X["Obesity"]
-        X["CardiacHistory_Core"] = X["Previous Heart Problems"] + X["Medication Use"]
-
         return X
 
 
@@ -76,8 +72,7 @@ def build_preprocessor():
             transformers=[
                 ("num", num_pipe, NUMERIC_FEATURES + [
                     "Pulse_Pressure", "MAP", "Activity_Score",
-                    "RiskFactor_Count", "Activity_Ratio",
-                    "Metabolic_Core", "CardiacHistory_Core"
+                    "RiskFactor_Count", "Activity_Ratio"
                 ]),
                 ("cat", cat_pipe, CATEGORICAL_FEATURES),
             ],
