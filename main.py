@@ -9,7 +9,7 @@ from pathlib import Path
 
 from src.data_cleaning import clean_data
 from src.train import train_model
-from src.predict import predict
+from predict import predict
 from src.config import DATA_DIR, TRAIN_FILE, ARTIFACTS_DIR, DEFAULT_MODEL
 
 def main():
