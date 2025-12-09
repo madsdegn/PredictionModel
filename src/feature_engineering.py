@@ -67,7 +67,7 @@ def build_preprocessor():
     ])
 
     preprocessor = Pipeline(steps=[
-        ("features", FeatureEngineer()),   # <-- add engineered features first
+        ("features", FeatureEngineer()),   # add engineered features first
         ("transform", ColumnTransformer(
             transformers=[
                 ("num", num_pipe, NUMERIC_FEATURES + [

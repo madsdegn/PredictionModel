@@ -14,12 +14,19 @@ def load_model(model_name: str = DEFAULT_MODEL):
     print(f"Loaded model from {model_path}")
     return pipeline
 
-def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):    # Load model
+def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):
+    """Load a trained model and make predictions on new data."""
     pipeline = load_model(model_name)
 
     # Load input data
     if input_path:
-        df = pd.read_csv(input_path)
+        # Auto-detect delimiter: try semicolon first, fall back to comma
+        try:
+            df = pd.read_csv(input_path, sep=";")
+            if df.shape[1] == 1:  # if it still collapsed into one column
+                df = pd.read_csv(input_path, sep=",")
+        except Exception:
+            df = pd.read_csv(input_path, sep=",")
     elif data:
         df = pd.DataFrame([data])
     else:
@@ -39,6 +46,5 @@ def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):    # Load mod
     return y_pred, y_proba
 
 if __name__ == "__main__":
-
-    # Example: predict from a CSV of new patients
-    predict(input_path="data/new_patients.csv")
+    # Predict from a CSV of new patients
+    predict(input_path="data/PredictHeartAttackData.csv")

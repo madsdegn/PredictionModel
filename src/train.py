@@ -23,7 +23,7 @@ from src.config import (
     SEED, DEFAULT_MODEL, ARTIFACTS_DIR
 )
 from src.models import MODEL_REGISTRY
-from src.evaluation import plot_evaluation   # <-- import plotting helper
+from src.evaluation import plot_evaluation # import plotting helper
 
 
 def train_model(model_name: str = DEFAULT_MODEL):
