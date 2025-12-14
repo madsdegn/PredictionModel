@@ -5,7 +5,7 @@
 # 18/12-25
 
 import pandas as pd
-from src.config import TARGET, ID_COLUMNS
+from src.config import ID_COLUMNS
 
 def clean_data(input_path, output_path=None):
     """
