@@ -74,11 +74,9 @@ def build_preprocessor_scaled():
 
     cat_transform = ColumnTransformer(
         transformers=[
-            ("continent", OneHotEncoder(handle_unknown="ignore"), ["Continent"]),
-            ("country", OneHotEncoder(handle_unknown="ignore"), ["Country"]),
+            #("continent", OneHotEncoder(handle_unknown="ignore"), ["Continent"]),
+            #("country", OneHotEncoder(handle_unknown="ignore"), ["Country"]),
             ("diet", OrdinalEncoder(), ["Diet"]),
-            ("sex", OrdinalEncoder(), ["Sex"]),
-            ("hemisphere", OrdinalEncoder(), ["Hemisphere"]),
         ],
         remainder="drop",
         verbose_feature_names_out=False,
@@ -125,11 +123,9 @@ def build_preprocessor_not_scaled():
 
     cat_transform = ColumnTransformer(
         transformers=[
-            ("continent", OneHotEncoder(handle_unknown="ignore"), ["Continent"]),
-            ("country", OneHotEncoder(handle_unknown="ignore"), ["Country"]),
+            #("continent", OneHotEncoder(handle_unknown="ignore"), ["Continent"]),
+            #("country", OneHotEncoder(handle_unknown="ignore"), ["Country"]),
             ("diet", OrdinalEncoder(), ["Diet"]),
-            ("sex", OrdinalEncoder(), ["Sex"]),
-            ("hemisphere", OrdinalEncoder(), ["Hemisphere"]),
         ],
         remainder="drop",
         verbose_feature_names_out=False,

@@ -13,7 +13,7 @@ from pathlib import Path
 # TRAIN_FILE is the main dataset used for training.
 DATA_DIR = Path("data")
 ARTIFACTS_DIR = Path("artifacts")
-TRAIN_FILE = DATA_DIR / "HeartAttackData.csv"
+TRAIN_FILE = DATA_DIR / "CleanedHeartAttackData.csv"
 
 # Target and identifier columns
 # TARGET is the column we want to predict (binary classification: 0/1).
@@ -52,8 +52,8 @@ NUMERIC_FEATURES = [
 CATEGORICAL_FEATURES = [
     "Sex",
     "Diet",
-    "Country",
-    "Continent",
+    #"Country",
+    #"Continent",
     "Hemisphere",
 ]
 

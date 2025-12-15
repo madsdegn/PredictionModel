@@ -38,6 +38,13 @@ def clean_data(input_path, output_path=None):
     df.drop(columns=[c for c in ID_COLUMNS if c in df.columns],
             inplace=True, errors="ignore")
 
+    # Binary encode categorical variables
+    df["Sex"] = df["Sex"].map({"Male": 0, "Female": 1})
+    df["Hemisphere"] = df["Hemisphere"].map({"Northern": 0, "Southern": 1})
+
+    df.drop(columns=["Country"], inplace=True, errors="ignore")
+    df.drop(columns=["Continent"], inplace=True, errors="ignore")
+
     # Split blood pressure into systolic and diastolic values
     if "Blood Pressure" in df.columns:
         bp_split = df["Blood Pressure"].str.split("/", expand=True)
