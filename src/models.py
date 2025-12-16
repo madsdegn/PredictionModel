@@ -161,7 +161,7 @@ def xgb(scale_pos_weight=None):
     # Preprocessing pipeline without scaling
     pre = build_preprocessor_not_scaled()
 
-    # XGBoost classifier (only if available)
+    # XGBoost classifier
     clf = XGBClassifier(
         objective="binary:logistic",          # Binary classification
         eval_metric="logloss",                # Evaluation metric
