@@ -1,67 +1,21 @@
-# -------------------------
-# Python
-# -------------------------
+# Python cache and build artifacts
 __pycache__/
 *.py[cod]
-*.egg
 *.egg-info/
 dist/
 build/
 
-# -------------------------
-# Jupyter
-# -------------------------
-.ipynb_checkpoints/
-*.nbconvert.ipynb
-
-# -------------------------
 # Virtual environment
-# -------------------------
 venv/
 
-# -------------------------
-# VS Code
-# -------------------------
+# IDE and OS clutter
 .vscode/
-
-# -------------------------
-# MacOS
-# -------------------------
 .DS_Store
 
-# -------------------------
-# Models
-# -------------------------
-models/
+# Model artifacts
+artifacts/
 *.pkl
 *.joblib
-*.h5
 
-# -------------------------
-# Reports / Outputs
-# -------------------------
-reports/
-*.csv
-*.tsv
-*.xlsx
-*.png
-*.jpg
-*.pdf
-
-# -------------------------
 # Logs
-# -------------------------
 *.log
-
-# -------------------------
-# Environment / Secrets
-# -------------------------
-.env
-*.sqlite3
-
-# -------------------------
-# Testing / Coverage
-# -------------------------
-.pytest_cache/
-.coverage
-htmlcov/

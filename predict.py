@@ -1,82 +1,97 @@
-# Predicting Heart Attacks Using Machine Learning
-# A project submitted for the Subject Module Project in Computer Science
-
-# Mads Degn, Julia Lundager, Daniel Holst Pedersen, Jonas Pheiffer, Magnus Stilling Østergaard
-# 18/12-25
-
 import pandas as pd
 import joblib
-from src.config import ARTIFACTS_DIR, DEFAULT_MODEL, TARGET
+from src.config import ARTIFACTS_DIR, DEFAULT_MODEL
+from src.data_cleaning import clean_data
 
 def load_model(model_name: str = DEFAULT_MODEL):
     """
     Loads a trained model pipeline from the artifacts directory.
 
-    Inputs
+    Parameters
     model_name : str, optional
-        The name of the model to load. Defaults to DEFAULT_MODEL.
+        Name of the model to load. Defaults to DEFAULT_MODEL.
 
     Processing steps
-    1. Construct the path to the saved model file in ARTIFACTS_DIR.
-    2. Load the pipeline object using joblib.
-    3. Print confirmation of the loaded model path.
+    1. Construct the file path for the saved model.
+    2. Load the pipeline using joblib.
+    3. Print confirmation of the loaded model.
 
-    Outputs
+    Returns
     pipeline : sklearn.Pipeline
-        The trained model pipeline ready for prediction.
+        The trained model pipeline including preprocessing and classifier.
     """
+
+    # Construct path to the saved model file
     model_path = ARTIFACTS_DIR / f"{model_name}_model.pkl"
+
+    # Load the pipeline from disk
     pipeline = joblib.load(model_path)
+
+    # Print confirmation message
     print(f"Loaded model from {model_path}")
+
+    # Return the loaded pipeline
     return pipeline
 
 
 def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):
     """
-    Loads a trained model and makes predictions on new patient data.
+    Generates predictions for new patient data using a trained model.
 
-    Inputs
+    Parameters
     model_name : str, optional
-        The name of the model to use for prediction. Defaults to DEFAULT_MODEL.
-    input_path : str or Path, optional
-        Path to a CSV file containing new patient data.
+        Name of the model to use for prediction. Defaults to DEFAULT_MODEL.
+    input_path : str, optional
+        Path to a CSV file containing patient data.
     data : dict, optional
-        A dictionary of patient features for prediction. Used if no CSV path is provided.
+        Dictionary of patient features for prediction.
 
     Processing steps
-    1. Load the trained model pipeline using load_model.
-    2. Load input data:
-       - If input_path is provided, attempt to read CSV with semicolon delimiter,
-         falling back to comma if necessary.
-       - If data dictionary is provided, convert it into a DataFrame.
-       - Raise an error if neither input_path nor data is provided.
-    3. Use the pipeline to predict class labels and probabilities.
-    4. Print predictions for each patient, including risk classification
-       and probability if available.
+    1. Load the trained model pipeline.
+    2. Read input data from CSV or dictionary.
+       - Handle both semicolon and comma separators for CSV files.
+    3. Clean the input data using the same cleaning function as training.
+    4. Generate predictions and probabilities.
+    5. Print results for each patient.
 
-    Outputs
+    Returns
     y_pred : numpy.ndarray
-        Array of predicted class labels (0 = Low Risk, 1 = High Risk).
+        Predicted class labels (0 = low risk, 1 = high risk).
     y_proba : numpy.ndarray or None
-        Array of predicted probabilities for the positive class, if available.
+        Predicted probabilities for high risk, if available.
     """
+
+    # Load the trained model pipeline
     pipeline = load_model(model_name)
 
-    # Load input data from CSV or dictionary
+    # Load input data from CSV file if provided
     if input_path:
         try:
+            # First try reading with semicolon separator
             df = pd.read_csv(input_path, sep=";")
-            if df.shape[1] == 1:  # If file collapsed into one column, retry with comma
+
+            # If file collapsed into one column, retry with comma separator
+            if df.shape[1] == 1:
                 df = pd.read_csv(input_path, sep=",")
         except Exception:
+            # Fallback: read with comma separator
             df = pd.read_csv(input_path, sep=",")
+
+    # If data dictionary is provided, convert to DataFrame
     elif data:
         df = pd.DataFrame([data])
+
+    # If neither input_path nor data is provided, raise an error
     else:
         raise ValueError("Provide either input_path or data dictionary")
 
-    # Generate predictions and probabilities
+    # Clean the data before prediction (same cleaning as training)
+    df = clean_data(df)
+
+    # Generate predictions (class labels)
     y_pred = pipeline.predict(df)
+
+    # Generate probabilities if model supports predict_proba
     y_proba = pipeline.predict_proba(df)[:, 1] if hasattr(pipeline, "predict_proba") else None
 
     # Print predictions for each patient
@@ -86,6 +101,7 @@ def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):
         prob = f" (probability: {y_proba[i]:.2f})" if y_proba is not None else ""
         print(f"Patient {i+1}: {risk}{prob}")
 
+    # Return predictions and probabilities
     return y_pred, y_proba
 
 

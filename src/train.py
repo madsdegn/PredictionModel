@@ -25,12 +25,11 @@ from src.config import (
 from src.models import MODEL_REGISTRY
 from src.evaluation import plot_evaluation
 
-
 def train_model(model_name: str = DEFAULT_MODEL):
     """
     Trains a machine learning model on the heart attack dataset and evaluates its performance.
 
-    Inputs
+    Parameters
     model_name : str, optional
         The name of the model to train. Defaults to the value in DEFAULT_MODEL.
         Options include "log_reg", "knn", "dt", "rf", "xgb".
@@ -38,33 +37,36 @@ def train_model(model_name: str = DEFAULT_MODEL):
     Processing steps
     1. Load the dataset from TRAIN_FILE and separate features (X) and target (y).
     2. Perform stratified splitting into training, validation, and test sets
-       using the proportions defined in TRAIN_SIZE, VALIDATION_SIZE, and TEST_SIZE.
+       using proportions defined in config.py.
     3. Build the model pipeline from MODEL_REGISTRY. If XGBoost is selected,
        calculate scale_pos_weight to handle class imbalance.
     4. Fit the pipeline on the training data.
     5. Evaluate the model on train, validation, and test sets, computing metrics
        such as accuracy, precision, recall, F1, ROC-AUC, and PR-AUC.
     6. Save the trained model to ARTIFACTS_DIR for later use.
-    7. Generate evaluation plots for the test set.
+    7. Optionally generate evaluation plots for the test set.
 
-    Outputs
+    Returns
     metrics : dict
         A dictionary containing evaluation metrics for train, validation, and test sets.
     """
-    # Load dataset and separate features and target
-    df = pd.read_csv(TRAIN_FILE)
-    X = df.drop(columns=[TARGET])
-    y = df[TARGET]
 
-    # Stratified split into train and temporary (validation + test)
+    # Load dataset from CSV
+    df = pd.read_csv(TRAIN_FILE)
+
+    # Separate features (X) and target (y)
+    X = df.drop(columns=[TARGET])   # Features: all columns except target
+    y = df[TARGET]                  # Target column: binary classification
+
+    # First split: training set vs temporary set (validation + test)
     X_train, X_temp, y_train, y_temp = train_test_split(
         X, y,
         train_size=TRAIN_SIZE,
         random_state=SEED,
-        stratify=y
+        stratify=y   # Ensures class proportions are preserved
     )
 
-    # Stratified split of temporary set into validation and test
+    # Second split: split temporary set into validation and test
     val_ratio = VALIDATION_SIZE / (VALIDATION_SIZE + TEST_SIZE)
     X_val, X_test, y_val, y_test = train_test_split(
         X_temp, y_temp,
@@ -73,25 +75,29 @@ def train_model(model_name: str = DEFAULT_MODEL):
         stratify=y_temp
     )
 
-    # Build model pipeline from registry
+    # Select model builder function from registry
     model_fn = MODEL_REGISTRY[model_name]
 
+    # Special case: XGBoost requires scale_pos_weight to handle class imbalance
     if model_name == "xgb":
-        # Calculate scale_pos_weight for imbalance handling
         pos_weight = (len(y_train) - sum(y_train)) / sum(y_train)
         pipeline = model_fn(scale_pos_weight=pos_weight)
     else:
         pipeline = model_fn()
 
-    # Train the model pipeline
+    # Fit the pipeline on the training data
     pipeline.fit(X_train, y_train)
 
     # Helper function to evaluate model performance on a given split
     def evaluate(split_name, X_split, y_split):
+        # Predict class labels
         y_pred = pipeline.predict(X_split)
+
+        # Print classification report with precision, recall, F1 per class
         print(f"\n--- {split_name} ---")
         print(classification_report(y_split, y_pred, digits=3))
 
+        # Collect basic metrics
         metrics = {
             f"{split_name}_Accuracy": accuracy_score(y_split, y_pred),
             f"{split_name}_Precision": precision_score(y_split, y_pred, zero_division=0),
@@ -99,7 +105,7 @@ def train_model(model_name: str = DEFAULT_MODEL):
             f"{split_name}_F1": f1_score(y_split, y_pred, zero_division=0),
         }
 
-        # Compute ROC-AUC and PR-AUC if probabilities are available
+        # If model supports probabilities, compute ROC-AUC and PR-AUC
         if hasattr(pipeline, "predict_proba"):
             y_proba = pipeline.predict_proba(X_split)[:, 1]
             metrics[f"{split_name}_ROC_AUC"] = roc_auc_score(y_split, y_proba)
@@ -116,15 +122,15 @@ def train_model(model_name: str = DEFAULT_MODEL):
     metrics.update(evaluate("Test", X_test, y_test))
 
     # Save the trained model to artifacts directory
-    ARTIFACTS_DIR.mkdir(exist_ok=True)
+    ARTIFACTS_DIR.mkdir(exist_ok=True)   # Create folder if it doesn’t exist
     model_path = ARTIFACTS_DIR / f"{model_name}_model.pkl"
     joblib.dump(pipeline, model_path)
     print(f"\nModel saved to {model_path}")
 
-    # Generate evaluation plots for the test set
+    # Generate evaluation plots for the test set (currently commented out)
     # plot_evaluation(pipeline, X_test, y_test, model_name)
 
-    # Return collected metrics
+    # Return collected metrics for further analysis
     return metrics
 
 

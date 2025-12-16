@@ -12,7 +12,7 @@ def plot_evaluation(pipeline, X_test, y_test, model_name):
     """
     Generates evaluation plots for a trained model on the test dataset.
 
-    Inputs
+    Parameters
     pipeline : sklearn.Pipeline
         The trained model pipeline that includes preprocessing and the classifier.
     X_test : pandas.DataFrame or numpy.ndarray
@@ -29,16 +29,19 @@ def plot_evaluation(pipeline, X_test, y_test, model_name):
     4. Generate and display the Precision-Recall curve.
     5. Generate and display the confusion matrix.
 
-    Outputs
+    Returns
     None
         The function does not return values. It produces plots displayed
         interactively using matplotlib.
     """
-    # Predict class labels and probabilities
+
+    # Predict class labels for the test set
     y_pred = pipeline.predict(X_test)
+
+    # Predict class probabilities for the test set
     y_proba = pipeline.predict_proba(X_test)[:, 1]
 
-    # Plot ROC curve
+    # Plot ROC curve (Receiver Operating Characteristic)
     RocCurveDisplay.from_predictions(y_test, y_proba)
     plt.title(f"ROC Curve - {model_name}")
     plt.show()
@@ -48,7 +51,7 @@ def plot_evaluation(pipeline, X_test, y_test, model_name):
     plt.title(f"Precision-Recall Curve - {model_name}")
     plt.show()
 
-    # Plot confusion matrix
+    # Plot confusion matrix (true vs predicted labels)
     ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
     plt.title(f"Confusion Matrix - {model_name}")
     plt.show()
