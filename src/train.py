@@ -122,7 +122,7 @@ def train_model(model_name: str = DEFAULT_MODEL):
     print(f"\nModel saved to {model_path}")
 
     # Generate evaluation plots for the test set
-    plot_evaluation(pipeline, X_test, y_test, model_name)
+    # plot_evaluation(pipeline, X_test, y_test, model_name)
 
     # Return collected metrics
     return metrics

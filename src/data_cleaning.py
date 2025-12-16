@@ -40,8 +40,12 @@ def clean_data(input_path, output_path=None):
 
     # Binary encode categorical variables
     df["Sex"] = df["Sex"].map({"Male": 0, "Female": 1})
-    df["Hemisphere"] = df["Hemisphere"].map({"Northern": 0, "Southern": 1})
+    df["Hemisphere"] = df["Hemisphere"].map({"Northern Hemisphere": 0, "Southern Hemisphere": 1})
 
+    # Ordinal encode categorical 'Diet' feature
+    df["Diet"] = df["Diet"].map({"Unhealthy": 0, "Average": 1, "Healthy": 2})
+
+    # Drop unused categorical columns
     df.drop(columns=["Country"], inplace=True, errors="ignore")
     df.drop(columns=["Continent"], inplace=True, errors="ignore")
 

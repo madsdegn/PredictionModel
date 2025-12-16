@@ -21,21 +21,11 @@ TRAIN_FILE = DATA_DIR / "CleanedHeartAttackData.csv"
 TARGET = "Heart Attack Risk"
 ID_COLUMNS = ["Patient ID"]
 
-# Numeric features
-# These are continuous or binary numeric features used in training.
-# Includes engineered features created during cleaning (Systolic_BP and Diastolic_BP).
-NUMERIC_FEATURES = [
+CONTINUOUS_FEATURES = [
     "Age",
     "Cholesterol",
     "Heart Rate",
-    "Diabetes",
-    "Family History",
-    "Smoking",
-    "Obesity",
-    "Alcohol Consumption",
     "Exercise Hours Per Week",
-    "Previous Heart Problems",
-    "Medication Use",
     "Stress Level",
     "Sedentary Hours Per Day",
     "Income",
@@ -47,14 +37,22 @@ NUMERIC_FEATURES = [
     "Diastolic_BP",    # created in data_cleaning.py
 ]
 
-# Categorical features
-# These are categorical variables that will be encoded during preprocessing.
-CATEGORICAL_FEATURES = [
-    "Sex",
+BINARY_FEATURES = [
+    "Sex",             # encoded in data_cleaning.py
+    "Hemisphere",      # encoded in data_cleaning.py
+    "Diabetes",
+    "Family History",
+    "Smoking",
+    "Obesity",
+    "Alcohol Consumption",
+    "Previous Heart Problems",
+    "Medication Use",
+    #"Country",        # encoded in data_cleaning.py
+    #"Continent",      # encoded in data_cleaning.py
+]
+
+ORDINAL_FEATURES = [
     "Diet",
-    #"Country",
-    #"Continent",
-    "Hemisphere",
 ]
 
 # Training setup
