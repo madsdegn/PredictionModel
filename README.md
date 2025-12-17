@@ -51,7 +51,7 @@ This prints metrics for each model across train, validation, and test sets.
 
 ## Making Predictions
 To generate predictions for new patient data from a CSV file:
-python main.py --step predict --model rf --input data/PredictHeartAttackData.
+python main.py --step predict --model rf --input data/PredictHeartAttackData.csv
 
 The script prints predicted risk (High Risk / Low Risk) and probabilities if available.
 
