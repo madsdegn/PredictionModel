@@ -56,9 +56,9 @@ def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):
 
     Returns
     y_pred : numpy.ndarray
-        Predicted class labels (0 = low risk, 1 = high risk).
+        Predicted class labels (0 = no risk, 1 = risk).
     y_proba : numpy.ndarray or None
-        Predicted probabilities for high risk, if available.
+        Predicted probabilities for risk, if available.
     """
 
     # Load the trained model pipeline
@@ -97,7 +97,7 @@ def predict(model_name=DEFAULT_MODEL, input_path=None, data=None):
     # Print predictions for each patient
     print("\nPredictions:")
     for i, pred in enumerate(y_pred):
-        risk = "High Risk" if pred == 1 else "Low Risk"
+        risk = "Risk" if pred == 1 else "No Risk"
         prob = f" (probability: {y_proba[i]:.2f})" if y_proba is not None else ""
         print(f"Patient {i+1}: {risk}{prob}")
 
